@@ -59,6 +59,7 @@ footer{text-align:center;color:#7a7058;font-size:12px;padding:30px 0;line-height
 <script>
 /* ===== 每日更新：只需替換 DATA（由 build.py 從東方財富/新浪/樂咕/財聯社抓取生成）===== 金額單位：元；idx 欄位 [開,昨收,收,高,低,成交額] */
 const DATA={
+"tagline": "深V反轉 創業板 +4.16%",
 "date": "2026-10-23（週五）",
 "generated": "2026-10-23 17:40（台北 UTC+8）",
 "idx": {
@@ -11107,7 +11108,7 @@ for(const [n,o] of Object.entries(I)){const [op,pc,c2,hi,lo,amt]=o,ch=c2-pc,pct=
 h+=`<div class="card rv"><h3>${n}</h3><div class="big ${k}">${N(c2)}</div><div class="${k}">${sg(ch)}${ch.toFixed(2)}（${sg(pct)}${pct.toFixed(2)}%）</div>${spark(o)}<div class="mut">開 ${op.toFixed(2)}／高 ${hi.toFixed(2)}／低 ${lo.toFixed(2)}<br>昨收 ${pc.toFixed(2)}・成交 ${yi(amt)} 億</div></div>`}
 $('idx').innerHTML=h;
 const sh=I["上證指數"],sp=(sh[2]-sh[1])/sh[1]*100,downs=Object.values(I).filter(o=>o[2]<o[1]).length,b=DATA.breadth;
-$('verdict').innerHTML=(sp<0?'<b class="dn">空軍勝</b>':'<b class="up">多軍勝</b>')+`<div class="gold" style="font-size:15px;letter-spacing:.1em">六大指數 ${downs}/6 收跌｜上證 ${sp.toFixed(2)}%｜${b.up} 漲 : ${b.down} 跌｜算力硬件重挫 創業板 -4.37%</div>`;
+$('verdict').innerHTML=(sp<0?'<b class="dn">空軍勝</b>':'<b class="up">多軍勝</b>')+`<div class="gold" style="font-size:15px;letter-spacing:.1em">六大指數 ${sp<0?downs+'/6 收跌':(6-downs)+'/6 收漲'}｜上證 ${sp.toFixed(2)}%｜${b.up} 漲 : ${b.down} 跌｜${DATA.tagline||''}</div>`;
 const ratio=b.up/(b.up+b.down),zbr=b.zb/(b.zt+b.zb),f=DATA.mktFlow,tv=DATA.turnover;
 $('gauges').innerHTML=gauge('上漲家數佔比',ratio,N(ratio*100,1,'','%'),`${b.up} 漲／${b.down} 跌／${b.flat} 平`,'0%','100%')
 +gauge('兩市成交額',tv.total/2.5e12,N(tv.total/1e12,2,'','兆'),`較前日 ${yi(tv.chg)} 億（縮量）`,'0','2.5兆')

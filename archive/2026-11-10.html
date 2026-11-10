@@ -61,7 +61,7 @@ footer{text-align:center;color:#7a7058;font-size:12px;padding:30px 0;line-height
 const DATA={
 "tagline": "A股全面反彈 上證 +0.08%、創業板指 +1.46%，電子／傳媒領漲，成交放量至1.50萬億，4002股上漲、主力淨流入約173億",
 "date": "2026-11-10（週二）",
-"generated": "2026-11-10 17:45（台北 UTC+8）",
+"generated": "2026-11-10 21:40（台北 UTC+8）",
 "idx": {
 "上證指數": [
 3682.04,
@@ -11539,6 +11539,38 @@ const DATA={
 ]
 },
 "error": "最新行情日 2026-11-10 的份額尚未公布（或抓取失敗），資料日仍為 2026-11-09（份額 T+1）。"
+},
+"seesaw": {
+"ok": true,
+"date": "2026-11-10",
+"cy": 2490.173,
+"hl": 11722.5,
+"ratio": 0.2124,
+"pct1500": 37.9,
+"zone": "20-80%",
+"label": "50/50 平衡持有",
+"target_g": 50,
+"target_d": 50,
+"p20": 0.1767,
+"p80": 0.3092,
+"dist20": 20.2,
+"dist80": 45.5,
+"src": "399673 收盤新浪 2490.173（騰訊、東財 2490.17）；930955 收盤 11722.5，中證官網與東財一致",
+"img": "rotation_20261110.png"
+},
+"chinextDiv": {
+"ok": true,
+"date": "2026-11-10",
+"cx": 2494.4,
+"dv": 5529.32,
+"ratio": 0.4511,
+"lo": 0.4,
+"hi": 0.62,
+"in_band": true,
+"action": "不動",
+"dist_lo": 12.8,
+"dist_hi": 37.4,
+"src": "399006 收 2494.40，新浪、騰訊、東財一致；000922 收 5529.32，中證官網、騰訊、東財一致"
 }
 };
 </script>
@@ -11552,7 +11584,7 @@ const DATA={
 <header><h1 class="gold" style="letter-spacing:.2em;font-size:clamp(26px,5vw,44px)">A股每日多空戰報</h1><div class="mut" id="hd" style="font-size:13px;margin-top:6px"></div></header>
 <div class="verdict rv" id="verdict"></div>
 <div class="grid g6" id="idx"></div>
-<div class="sec"><div class="st gold">市場儀表盤</div><div class="grid g6" id="gauges"></div><div class="card rv" id="natTeam" style="margin-top:14px"></div></div>
+<div class="sec"><div class="st gold">市場儀表盤</div><div class="grid g6" id="gauges"></div><div class="grid g2" id="rotCards" style="margin-top:14px"></div><div class="card rv" id="natTeam" style="margin-top:14px"></div></div>
 <div class="sec"><div class="st gold">資金流向</div><div class="grid g2"><div class="card rv"><h3>大盤資金流線（滬深兩市・億元）</h3><svg id="sankey" viewBox="0 0 520 260" width="100%"></svg></div><div class="card rv"><h3>主力／超大單／大單／中單／小單</h3><div id="flowbars"></div><div style="margin-top:14px" id="flowhist"></div></div></div></div>
 <div class="sec"><div class="st gold">分時資金流向 9:30–15:00</div><div class="card rv" id="intraCard"><div class="ibar"><button class="pbtn" id="iplay">▶ 重播</button><span id="ilg"></span><span class="mut" style="margin-left:auto">午休 11:30–13:00 已壓縮｜累計淨額（億元）｜右軸：上證指數</span></div>
 <div class="ichart"><canvas id="ic"></canvas><div class="itip" id="itip"></div></div><div class="isum" id="isum"></div>
@@ -11625,6 +11657,32 @@ el.innerHTML='<h3>國家隊持倉（300ETF規模占比）</h3><div class="grid g
 +'<div>'+spark+'</div></div>'
 +'<div class="mut" style="margin-top:8px">資料日 '+n.data_date+'（份額通常 T+1 公布）'+staleNote+'｜份額日增 '+sh+'｜標的 510300＋510310＋510330，未納入 159919｜流通市值為東財代理（單一來源）</div>'}
 
+
+function renderRotCards(){const el=$('rotCards');if(!el)return;
+const sw=DATA.seesaw||{},cd=DATA.chinextDiv||{};
+const card=(ok,title,body,why)=>{if(!ok)return `<div class="card rv"><h3>${title}</h3><div class="tbd">資料未更新</div><div class="mut">${why||''}</div></div>`;return `<div class="card rv"><h3>${title}</h3>${body}</div>`};
+let swBody='';
+if(sw.ok){
+  const lab=sw.label||'';
+  swBody=`<div class="big" style="font-size:28px;margin:4px 0 2px">${N(sw.ratio,4)}</div>
+  <div class="gold" style="font-weight:800">${lab||sw.zone||''}</div>
+  <div class="kv"><span>1500日分位</span><span>${Number(sw.pct1500).toFixed(1)}%（${sw.zone||''}）</span></div>
+  <div class="kv"><span>目標權重</span><span>創業板50ETF 159949 ${sw.target_g}% ／ 紅利低波ETF 515100 ${sw.target_d}%</span></div>
+  <div class="kv"><span>距20%分位線（比值 ${Number(sw.p20).toFixed(4)}）</span><span>約 ${sg(sw.dist20)}${Number(sw.dist20).toFixed(1)}%</span></div>
+  <div class="kv"><span>距80%分位線（比值 ${Number(sw.p80).toFixed(4)}）</span><span>約 ${Number(sw.dist80).toFixed(1)}%</span></div>
+  <div class="mut" style="margin-top:8px">資料日 ${sw.date}｜創業板50 399673 ${Number(sw.cy).toFixed(3)} ÷ 紅利低波100 930955 ${Number(sw.hl).toFixed(2)}｜${sw.src||''}${sw.img?('｜<a style="color:#d4af37" href="'+sw.img+'">輪動圖</a>'):''}</div>`;
+}
+let cdBody='';
+if(cd.ok){
+  const bandOk=!!cd.in_band;
+  cdBody=`<div class="big" style="font-size:28px;margin:4px 0 2px">${N(cd.ratio,4)}</div>
+  <div class="gold" style="font-weight:800">${cd.action||''}（${bandOk?'位於':'偏離'} ${Number(cd.lo).toFixed(2)}–${Number(cd.hi).toFixed(2)} 帶）</div>
+  <div class="kv"><span>距下沿 ${Number(cd.lo).toFixed(2)}</span><span>約 ${sg(cd.dist_lo)}${Number(cd.dist_lo).toFixed(1)}%</span></div>
+  <div class="kv"><span>距上沿 ${Number(cd.hi).toFixed(2)}</span><span>約 ${Number(cd.dist_hi).toFixed(1)}%</span></div>
+  <div class="mut" style="margin-top:8px">資料日 ${cd.date}｜創業板指 399006 ${Number(cd.cx).toFixed(2)} ÷ 中證紅利 000922 ${Number(cd.dv).toFixed(2)}｜${cd.src||''}</div>`;
+}
+el.innerHTML=card(!!sw.ok,'翹翹板 B′（399673 ÷ 930955）',swBody,sw.why)+card(!!cd.ok,'創業紅利比 A（399006 ÷ 000922）',cdBody,cd.why)}
+
 function render(){const I=DATA.idx;let h='';
 for(const [n,o] of Object.entries(I)){const [op,pc,c2,hi,lo,amt]=o,ch=c2-pc,pct=ch/pc*100,k=cl(ch);
 h+=`<div class="card rv"><h3>${n}</h3><div class="big ${k}">${N(c2)}</div><div class="${k}">${sg(ch)}${ch.toFixed(2)}（${sg(pct)}${pct.toFixed(2)}%）</div>${spark(o)}<div class="mut">開 ${op.toFixed(2)}／高 ${hi.toFixed(2)}／低 ${lo.toFixed(2)}<br>昨收 ${pc.toFixed(2)}・成交 ${yi(amt)} 億</div></div>`}
@@ -11641,6 +11699,7 @@ $('gauges').innerHTML=gauge('上漲家數佔比',ratio,N(ratio*100,1,'','%'),`${
 if(!m.ok)return gauge('市場冷熱（焦點股動量）',0,'<span class="tbd">資料未更新</span>',NOTE,'-20%','+40%');
 const v=m.v,z=v<0?['冰點','dn']:v<10?['偏冷','dn']:v<=25?['正常','']:['偏熱','up'],p=Math.max(0,Math.min(1,(v+20)/60));
 return gauge('市場冷熱（焦點股動量）',p,`<span class="${z[1]}">${N(v,1,v>=0?'+':'','%')}</span> <span style="font-size:15px">${z[0]}</span>`,`資料日 ${m.date}｜${NOTE}`,'-20%','+40%')})();
+renderRotCards();
 renderNatTeam();
 sankey();
 const fs=[['主力淨額',f.main],['超大單',f.xl],['大單',f.large],['中單',f.mid],['小單',f.small]];const fm=Math.max(...fs.map(a=>Math.abs(a[1])));
@@ -11660,7 +11719,7 @@ $('news').innerHTML=DATA.news.map(([a,b2])=>`<li><b>${a}</b>：${b2}</li>`).join
 $('out').innerHTML=DATA.outlook.map(s=>`<li>${s}</li>`).join('');
 const tk=Object.entries(I).map(([n,o])=>{const p=(o[2]-o[1])/o[1]*100;return `<span>${n} <b class="${cl(p)}">${o[2].toFixed(2)} ${sg(p)}${p.toFixed(2)}%</b></span>`}).concat(Object.entries(DATA.ext).map(([n,[v,p]])=>`<span>${n} <b class="${cl(p)}">${v} ${sg(p)}${p}%</b></span>`),DATA.stkAmt.map(r=>`<span>${r.n} <b class="${cl(r.pct)}">${r.p} ${sg(r.pct)}${r.pct}%</b></span>`)).join('<span class="gold">◆</span>');
 $('tick').innerHTML=tk+'<span class="gold">◆</span>'+tk;
-$('hd').textContent=DATA.date+' 收盤版 ｜ 資料：東方財富・新浪財經・樂咕樂股・財聯社・上交所ETF份額';
+$('hd').textContent=DATA.date+' 收盤版 ｜ 資料：東方財富・新浪財經・騰訊行情・中證指數・樂咕樂股・財聯社・上交所ETF份額';
 $('ft').innerHTML=`生成時間：${DATA.generated}<br>標「待補」為未取得可靠數據；「示意／估算」為推算值，非官方數據。<br>免責聲明：本戰報僅供資訊參考，不構成任何投資建議；投資有風險，入市須謹慎。`}
 
 /* ===== 分時資金流 ===== */

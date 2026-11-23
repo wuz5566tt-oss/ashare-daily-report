@@ -11939,7 +11939,7 @@ const DATA={
 </script>
 <div id="intro"><canvas id="pc"></canvas><div class="it">
 <div class="sub">CHINA A-SHARE DAILY BATTLE REPORT</div><h1 class="gold">A股每日多空戰報</h1><div class="line"></div>
-<div class="sub" id="isub">2026 / 10 / 21（週三）收盤版</div>
+<div class="sub" id="isub">2026 / 11 / 23 （週一） 收盤版</div>
 <div class="vs"><span class="b">🐂 多軍</span><span class="s">VS</span><span class="r">🐻 空軍</span></div>
 <div class="verdict" id="iverd"></div><div class="ilist" id="ilist"></div>
 <button id="enter">進入戰情室</button></div></div>
@@ -12051,7 +12051,7 @@ function render(){const I=DATA.idx;let h='';
 for(const [n,o] of Object.entries(I)){const [op,pc,c2,hi,lo,amt]=o,ch=c2-pc,pct=ch/pc*100,k=cl(ch);
 h+=`<div class="card rv"><h3>${n}</h3><div class="big ${k}">${N(c2)}</div><div class="${k}">${sg(ch)}${ch.toFixed(2)}（${sg(pct)}${pct.toFixed(2)}%）</div>${spark(o)}<div class="mut">開 ${op.toFixed(2)}／高 ${hi.toFixed(2)}／低 ${lo.toFixed(2)}<br>昨收 ${pc.toFixed(2)}・成交 ${yi(amt)} 億</div></div>`}
 $('idx').innerHTML=h;
-const sh=I["上證指數"],sp=(sh[2]-sh[1])/sh[1]*100,downs=Object.values(I).filter(o=>o[2]<o[1]).length,b=DATA.breadth;
+const sh=I["上證指數"],sp=(sh[0]-sh[1])/sh[1]*100,downs=Object.values(I).filter(o=>o[0]<o[1]).length,b=DATA.breadth;
 $('verdict').innerHTML=(sp<0?'<b class="dn">空軍勝</b>':'<b class="up">多軍勝</b>')+`<div class="gold" style="font-size:15px;letter-spacing:.1em">六大指數 ${sp<0?downs+'/6 收跌':(6-downs)+'/6 收漲'}｜上證 ${sp.toFixed(2)}%｜${b.up} 漲 : ${b.down} 跌｜${DATA.tagline||''}</div>`;
 const ratio=b.up/(b.up+b.down),zbr=b.zb/(b.zt+b.zb),f=DATA.mktFlow,tv=DATA.turnover;
 $('gauges').innerHTML=gauge('上漲家數佔比',ratio,N(ratio*100,1,'','%'),`${b.up} 漲／${b.down} 跌／${b.flat} 平`,'0%','100%')
@@ -12181,7 +12181,7 @@ const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEac
 document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%6)*70+'ms';io?io.observe(el):(el.classList.add('show'),animate(el))});
 /* 保險：2.5 秒後全部顯示，避免內容卡在隱藏 */
 setTimeout(()=>document.querySelectorAll('.rv').forEach(el=>{el.classList.add('show');animate(el)}),2500)}
-const _ix=DATA.idx,_sh=_ix['上證指數'],_ch=_sh[2]-_sh[1];const iv=$('iverd');iv.textContent=(_ch<0?'空軍勝 ▼ ':'多軍勝 ▲ ')+(_ch>=0?'+':'')+_ch.toFixed(2)+'（上證 '+(_ch/_sh[1]*100).toFixed(2)+'%）';if(_ch<0)iv.classList.add('bear');
+const _ix=DATA.idx,_sh=_ix['上證指數'],_ch=_sh[0]-_sh[1];const iv=$('iverd');iv.textContent=(_ch<0?'空軍勝 ▼ ':'多軍勝 ▲ ')+(_ch>=0?'+':'')+_ch.toFixed(2)+'（上證 '+(_ch/_sh[1]*100).toFixed(2)+'%）';if(_ch<0)iv.classList.add('bear');
 $('isub').textContent=DATA.date.replace(/-/g,' / ').replace('（',' （')+' 收盤版';
 $('ilist').innerHTML=Object.entries(_ix).map(([n,o])=>{const p=(o[2]-o[1])/o[1]*100;return `<span>${n} <b class="${p>=0?'u':'d'}">${o[2].toFixed(2)} ${p>=0?'+':''}${p.toFixed(2)}%</b></span>`}).join('');
 /* 黑金進場動畫 Kit：IntroKit.init({autoMs, onEnter}) */
